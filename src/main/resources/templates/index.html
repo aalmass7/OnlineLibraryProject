@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookVerse Library</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<main>
+    <section class="hero-section">
+        <div class="hero-orb hero-orb-one"></div>
+        <div class="hero-orb hero-orb-two"></div>
+        <div class="wrap hero-grid">
+            <div class="hero-copy">
+                <span class="badge">#1 Library</span>
+                <h1>Free online library for everyone</h1>
+                <p class="hero-text">
+                    A simple and convenient online library where students can easily find, view and borrow books.
+                </p>
+                <form method="get" action="/" class="search-bar">
+                    <input type="text" name="q" placeholder="Search by title..." th:value="${q}">
+                    <button class="btn" type="submit">Search</button>
+                </form>
+                <div class="hero-actions">
+                    <a class="btn" href="#catalog">Explore catalog</a>
+                    <a class="btn btn-light" href="/register" th:if="${!isAuthenticated}">Create account</a>
+                    <a class="btn btn-light" href="/cart" th:if="${isAuthenticated}">Open cart</a>
+                </div>
+            </div>
+            <div class="hero-panel glass-card">
+                <div class="stat-card">
+                    <span>Free access</span>
+                    <strong>Free library for students</strong>
+                </div>
+                <div class="stat-card">
+                    <span>Easy to use</span>
+                    <strong>Simple and convenient for everyone</strong>
+                </div>
+                <div class="stat-card">
+                    <span>Online catalog</span>
+                    <strong>Find and borrow books anytime</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap section-spacer">
+        <div class="section-title-row">
+            <div>
+                <p class="eyebrow">Genres</p>
+                <h2>Browse by category</h2>
+            </div>
+            <a class="link-muted" href="/">Reset filter</a>
+        </div>
+        <div class="chip-list">
+            <a th:each="category : ${categories}"
+               th:href="@{/(genre=${category.name})}"
+               class="chip"
+               th:classappend="${selectedGenre == category.name} ? ' active-chip' : ''"
+               th:text="${category.name}">Genre</a>
+        </div>
+    </section>
+
+    <section class="wrap section-spacer" th:if="${featuredBooks != null and !featuredBooks.isEmpty()}">
+        <div class="section-title-row">
+            <div>
+                <p class="eyebrow">Featured</p>
+                <h2>Recommended books</h2>
+            </div>
+            <span class="link-muted">Selected for the home page</span>
+        </div>
+        <div class="featured-grid">
+            <article class="featured-card" th:each="book : ${featuredBooks}">
+                <img class="featured-cover" th:src="${#strings.isEmpty(book.imageUrl) ? 'https://placehold.co/360x480?text=Book+Cover' : book.imageUrl}" th:alt="${book.title}" onerror="this.onerror=null;this.src='https://placehold.co/360x480?text=Book+Cover';">
+                <div class="featured-body">
+                    <span class="badge subtle-badge">Featured</span>
+                    <h3 th:text="${book.title}">Book title</h3>
+                    <p class="meta"><span th:text="${book.author.name}">Author</span> · <span th:text="${book.publicationYear}">2024</span></p>
+                    <p class="clamp-3" th:text="${book.description}">Description</p>
+                    <div class="card-actions">
+                        <a class="btn btn-secondary small-btn" th:href="@{'/books/' + ${book.id}}">Details</a>
+                        <form th:if="${isAuthenticated}" method="post" action="/cart/add" class="inline-form">
+                            <input type="hidden" name="bookId" th:value="${book.id}">
+                            <button class="btn small-btn" type="submit">Add to cart</button>
+                        </form>
+                        <a th:if="${!isAuthenticated}" class="btn small-btn" href="/login">Login to borrow</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="wrap section-spacer" id="catalog">
+        <div class="section-title-row">
+            <div>
+                <p class="eyebrow">Catalog</p>
+                <h2>All books</h2>
+            </div>
+            <p class="link-muted" th:if="${selectedGenre != null}">Showing genre: <span th:text="${selectedGenre}">Genre</span></p>
+        </div>
+
+        <div class="flash-message success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+        <div class="book-grid">
+            <article class="book-card" th:each="book : ${books}">
+                <img class="book-cover" th:src="${#strings.isEmpty(book.imageUrl) ? 'https://placehold.co/360x480?text=Book+Cover' : book.imageUrl}" th:alt="${book.title}" onerror="this.onerror=null;this.src='https://placehold.co/360x480?text=Book+Cover';">
+                <div class="book-content">
+                    <div class="card-top-row">
+                        <span class="badge subtle-badge">Free access</span>
+                        <span class="stock">Easy to borrow</span>
+                    </div>
+                    <h3 th:text="${book.title}">Book title</h3>
+                    <p class="meta"><strong>Author:</strong> <span th:text="${book.author.name}">Author</span></p>
+                    <p class="meta"><strong>Genres:</strong>
+                        <span th:each="category, stat : ${book.categories}">
+                            <span th:text="${category.name}">Category</span><span th:if="${!stat.last}">, </span>
+                        </span>
+                    </p>
+                    <p class="clamp-3" th:text="${book.description}">Description</p>
+                    <div class="card-actions">
+                        <a class="btn btn-secondary small-btn" th:href="@{'/books/' + ${book.id}}">View</a>
+                        <form th:if="${isAuthenticated}" method="post" action="/cart/add" class="inline-form">
+                            <input type="hidden" name="bookId" th:value="${book.id}">
+                            <button class="btn small-btn" type="submit">Add to cart</button>
+                        </form>
+                        <a th:if="${!isAuthenticated}" class="btn small-btn" href="/login">Login</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+</body>
+</html>

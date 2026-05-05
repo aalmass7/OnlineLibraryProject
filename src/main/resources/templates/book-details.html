@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${book.title} + ' - BookVerse'">Book Details</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<main class="wrap section-spacer">
+    <div class="details-layout card-surface">
+        <img class="details-cover" th:src="${#strings.isEmpty(book.imageUrl) ? 'https://placehold.co/360x480?text=Book+Cover' : book.imageUrl}" th:alt="${book.title}" onerror="this.onerror=null;this.src='https://placehold.co/360x480?text=Book+Cover';">
+        <div>
+            <span class="badge subtle-badge" th:if="${book.featured}">Featured book</span>
+            <h1 th:text="${book.title}">Book title</h1>
+            <p class="meta"><strong>Author:</strong> <span th:text="${book.author.name}">Author</span></p>
+            <p class="meta"><strong>Publication year:</strong> <span th:text="${book.publicationYear}">2024</span></p>
+            <p class="meta"><strong>ISBN:</strong> <span th:text="${book.isbn}">978...</span></p>
+            <p class="meta"><strong>Genres:</strong>
+                <span th:each="category, stat : ${book.categories}">
+                    <span th:text="${category.name}">Genre</span><span th:if="${!stat.last}">, </span>
+                </span>
+            </p>
+            <p class="meta"><strong>Copies:</strong> <span th:text="${book.availableCopies}">0</span>/<span th:text="${book.totalCopies}">0</span> available</p>
+            <p class="details-description" th:text="${book.description}">Description</p>
+
+            <div class="card-actions">
+                <form th:if="${isAuthenticated}" method="post" action="/cart/add" class="inline-form">
+                    <input type="hidden" name="bookId" th:value="${book.id}">
+                    <button class="btn" type="submit">Add to cart</button>
+                </form>
+                <a th:if="${!isAuthenticated}" class="btn" href="/login">Login to borrow</a>
+                <a class="btn btn-secondary" href="/">Back to catalog</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="section-spacer">
+        <div class="section-title-row">
+            <div>
+                <p class="eyebrow">Reader feedback</p>
+                <h2>Reviews</h2>
+            </div>
+            <span class="link-muted" th:text="${#lists.size(reviews)} + ' review(s)'">0 review(s)</span>
+        </div>
+        <div class="review-list">
+            <article class="review-card" th:each="review : ${reviews}">
+                <div class="review-top">
+                    <strong th:text="${review.user.fullName}">User</strong>
+                    <span class="badge subtle-badge" th:text="${review.rating} + '/5'">5/5</span>
+                </div>
+                <p th:text="${review.comment}">Comment</p>
+                <small class="link-muted" th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}">2026-05-03</small>
+            </article>
+            <p class="link-muted" th:if="${#lists.isEmpty(reviews)}">No reviews yet.</p>
+        </div>
+    </section>
+</main>
+</body>
+</html>

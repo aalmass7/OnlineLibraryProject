@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header class="site-header" th:fragment="siteHeader">
+    <div class="wrap nav-row">
+        <a href="/" class="brand">
+            <span class="brand-mark">BV</span>
+            <span>BookVerse</span>
+        </a>
+        <nav class="nav-links">
+            <a href="/">Home</a>
+            <a href="/cart" th:if="${isAuthenticated}">Cart <span class="nav-count" th:text="${cartCount}">0</span></a>
+            <a href="/my-loans" th:if="${isAuthenticated}">My Loans</a>
+            <a href="/login" th:if="${!isAuthenticated}">Login</a>
+            <a href="/register" th:if="${!isAuthenticated}">Register</a>
+            <span class="user-pill" th:if="${isAuthenticated}">
+                <span class="user-avatar" th:text="${#strings.substring(currentUser.fullName, 0, 1)}">U</span>
+                <span th:text="${currentUser.fullName}">User</span>
+            </span>
+            <form th:if="${isAuthenticated}" method="post" action="/logout" class="inline-form">
+                <button class="btn btn-light small-btn" type="submit">Logout</button>
+            </form>
+        </nav>
+    </div>
+</header>
+</body>
+</html>
