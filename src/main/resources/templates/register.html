@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - BookVerse</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body class="auth-page">
+<main class="auth-wrapper">
+    <div class="auth-side">
+        <a href="/" class="brand auth-brand"><span class="brand-mark">BV</span><span>BookVerse</span></a>
+        <span class="badge">Create account</span>
+        <h1>Join the library</h1>
+        <p>Create your account to borrow books, add items to the cart and manage your reading list.</p>
+        <a class="btn btn-light" href="/">Back to home</a>
+    </div>
+
+    <form method="post" action="/register" class="auth-card card-surface">
+        <h2>Create account</h2>
+        <label>Full name</label>
+        <input type="text" name="fullName" placeholder="Your full name" required>
+        <label>Email</label>
+        <input type="email" name="email" placeholder="name@example.com" required>
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Minimum 6 characters" required minlength="6">
+        <button class="btn" type="submit">Register</button>
+        <p class="switch-text">Already have an account? <a href="/login">Login</a></p>
+    </form>
+</main>
+</body>
+</html>

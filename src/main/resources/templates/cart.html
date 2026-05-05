@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - BookVerse</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/header :: siteHeader}"></div>
+
+<main class="wrap section-spacer">
+    <div class="section-title-row">
+        <div>
+            <p class="eyebrow">Borrow flow</p>
+            <h1>Borrow cart</h1>
+        </div>
+        <a class="btn btn-secondary small-btn" href="/">Continue browsing</a>
+    </div>
+
+    <div class="flash-message success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+    <div class="empty-state card-surface" th:if="${#lists.isEmpty(cartItems)}">
+        <h3>Your cart is empty</h3>
+        <p>Add books from the catalog, then checkout to create loans.</p>
+        <a class="btn" href="/">Go to catalog</a>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(cartItems)}">
+        <div class="cart-list">
+            <article class="cart-row card-surface" th:each="item : ${cartItems}">
+                <img class="cart-cover" th:src="${#strings.isEmpty(item.book.imageUrl) ? 'https://placehold.co/360x480?text=Book+Cover' : item.book.imageUrl}" th:alt="${item.book.title}" onerror="this.onerror=null;this.src='https://placehold.co/360x480?text=Book+Cover';">
+                <div class="cart-main">
+                    <h3 th:text="${item.book.title}">Book title</h3>
+                    <p class="meta">Author: <span th:text="${item.book.author.name}">Author</span></p>
+                    <p class="meta">Quantity: <span th:text="${item.quantity}">1</span></p>
+                </div>
+                <form method="post" th:action="@{'/cart/remove/' + ${item.id}}" class="inline-form">
+                    <button class="btn btn-secondary small-btn" type="submit">Remove</button>
+                </form>
+            </article>
+        </div>
+
+        <div class="checkout-box card-surface">
+            <h3>Checkout</h3>
+            <p>When you checkout, books in the cart will be converted into active loans.</p>
+            <form method="post" action="/cart/checkout" class="checkout-form">
+                <label for="days">Borrow period (days)</label>
+                <input id="days" name="days" type="number" min="1" max="60" value="14">
+                <button class="btn" type="submit">Checkout & borrow</button>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>

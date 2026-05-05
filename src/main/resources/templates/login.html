@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BookVerse</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body class="auth-page">
+<main class="auth-wrapper">
+    <div class="auth-side">
+        <a href="/" class="brand auth-brand"><span class="brand-mark">BV</span><span>BookVerse</span></a>
+        <span class="badge">Library account</span>
+        <h1>Welcome back</h1>
+        <p>Login to borrow books, manage your cart, and view your active loans.</p>
+        <div class="demo-box">
+            <p><strong>Admin:</strong> admin@library.kz / admin123</p>
+            <p><strong>Reader:</strong> reader@library.kz / reader123</p>
+        </div>
+        <a class="btn btn-light" href="/">Back to home</a>
+    </div>
+
+    <form method="post" action="/login" class="auth-card card-surface">
+        <h2>Login</h2>
+        <p class="error" th:if="${param.error}">Incorrect email or password.</p>
+        <p class="success" th:if="${param.registered}">Registered successfully. Please login.</p>
+        <label>Email</label>
+        <input type="email" name="email" value="reader@library.kz" required>
+        <label>Password</label>
+        <input type="password" name="password" value="reader123" required>
+        <button class="btn" type="submit">Login</button>
+        <p class="switch-text">Don't have an account? <a href="/register">Register</a></p>
+    </form>
+</main>
+</body>
+</html>
