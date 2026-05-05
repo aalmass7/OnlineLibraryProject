@@ -1,0 +1,94 @@
+### Base URL
+@baseUrl = http://localhost:8080
+@adminEmail = admin@library.kz
+@adminPassword = admin123
+@readerEmail = reader@library.kz
+@readerPassword = reader123
+
+### Register new reader
+POST {{baseUrl}}/api/public/register
+Content-Type: application/json
+
+{
+  "fullName": "Test Reader",
+  "email": "test.reader@library.kz",
+  "password": "test12345"
+}
+
+### List books (public GET)
+GET {{baseUrl}}/api/books
+
+### Search books by title
+GET {{baseUrl}}/api/books?title=clean
+
+### Create author
+POST {{baseUrl}}/api/authors
+Authorization: Basic {{adminEmail}} {{adminPassword}}
+Content-Type: application/json
+
+{
+  "name": "New Author",
+  "country": "Kazakhstan",
+  "biography": "Short author biography."
+}
+
+### Create category
+POST {{baseUrl}}/api/categories
+Authorization: Basic {{adminEmail}} {{adminPassword}}
+Content-Type: application/json
+
+{
+  "name": "Education",
+  "description": "Books for learning and education"
+}
+
+### Create book
+POST {{baseUrl}}/api/books
+Authorization: Basic {{adminEmail}} {{adminPassword}}
+Content-Type: application/json
+
+{
+  "title": "Example Book",
+  "isbn": "9780000000001",
+  "publicationYear": 2025,
+  "totalCopies": 4,
+  "availableCopies": 4,
+  "description": "Book created through REST API.",
+  "imageUrl": "https://placehold.co/360x480?text=Example+Book",
+  "featured": false,
+  "authorId": 1,
+  "categoryIds": [1]
+}
+
+### Add book to cart as reader
+POST {{baseUrl}}/api/cart
+Authorization: Basic {{readerEmail}} {{readerPassword}}
+Content-Type: application/json
+
+{
+  "bookId": 1
+}
+
+### Get current user's cart
+GET {{baseUrl}}/api/cart
+Authorization: Basic {{readerEmail}} {{readerPassword}}
+
+### Checkout cart
+POST {{baseUrl}}/api/cart/checkout?days=14
+Authorization: Basic {{readerEmail}} {{readerPassword}}
+
+### List my loans by user id
+GET {{baseUrl}}/api/loans?userId=2
+Authorization: Basic {{readerEmail}} {{readerPassword}}
+
+### Add review
+POST {{baseUrl}}/api/reviews
+Authorization: Basic {{readerEmail}} {{readerPassword}}
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "bookId": 1,
+  "rating": 5,
+  "comment": "Great book."
+}
